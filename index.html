@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jefatura de Analisis y Estadistica del Servicio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+    }
+
+    /* ===== ENCABEZADO ===== */
+    header {
+      background-color: #089844;
+      color: white;
+      padding: 15px 30px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    /* ===== MENÚ ===== */
+    nav {
+      background-color: #089844;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    nav ul li {
+      margin: 0;
+    }
+
+    nav ul li a {
+      display: block;
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav ul li a:hover {
+      background-color: #0b5ed7;
+    }
+
+    /* ===== CONTENIDO ===== */
+    main {
+      padding: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #0b5ed7;
+    }
+
+    /* ===== PIE DE PÁGINA ===== */
+    footer {
+      background-color: #212529;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+    }
+
+    footer a {
+      color: #adb5bd;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ENCABEZADO -->
+  <header>
+    <h1>Portal de Información</h1>
+    <p>Consulta y comparte datos de manera sencilla</p>
+  </header>
+
+  <!-- MENÚ DE NAVEGACIÓN -->
+  <nav>
+    <ul>
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#reportes">Reportes</a></li>
+      <li><a href="#mapas">Mapas</a></li>
+      <li><a href="#estadisticas">Estadísticas</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main>
+
+    <section id="inicio" class="card">
+      <h2>Inicio</h2>
+      <p>Bienvenido al portal web donde puedes consultar información pública, reportes y visualizaciones.</p>
+    </section>
+
+    <section id="reportes" class="card">
+      <h2>Reportes</h2>
+      <p>Aquí puedes publicar documentos, tablas o enlaces a dashboards (por ejemplo Looker Studio).</p>
+      <ul>
+        <li>Reporte mensual</li>
+        <li>Indicadores clave</li>
+        <li>Descarga de datos</li>
+      </ul>
+    </section>
+
+    <section id="mapas" class="card">
+      <h2>Mapas</h2>
+      <p>En esta sección puedes incrustar mapas interactivos (Leaflet, Google Maps o Folium).</p>
+      <p><em>Ejemplo:</em> aquí puede ir un iframe de tu mapa.</p>
+    </section>
+
+    <section id="estadisticas" class="card">
+      <h2>Estadísticas</h2>
+      <p>Gráficas, indicadores y visualizaciones para una mejor toma de decisiones.</p>
+    </section>
+
+    <section id="contacto" class="card">
+      <h2>Contacto</h2>
+      <p>Correo: contacto@tusitio.gob.mx</p>
+      <p>Teléfono: (55) 1234 5678</p>
+    </section>
+
+  </main>
+
+  <!-- PIE DE PÁGINA -->
+  <footer>
+    <p>© 2025 - Portal de Información | <a href="#">Aviso de privacidad</a></p>
+  </footer>
+
+</body>
+</html>
