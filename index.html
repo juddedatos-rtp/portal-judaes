@@ -4,70 +4,82 @@
 <title>Sistema CETRAM RTP</title>
 
 <style>
-body{
+body {
     font-family: Arial;
-    background:#ffffff;
-    padding:20px;
+    background: #ffffff;
+    padding: 20px;
 }
 
-h2{color:#2e7d32;}
-
-.form{
-    background:#fff;
-    padding:10px;
-    border-left:6px solid #66bb6a;
-    margin-bottom:20px;
+h2 {
+    color: #2e7d32;
 }
 
-input, select{
-    padding:6px;
-    margin:4px;
+.form {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-left: 6px solid #66bb6a;
 }
 
-button{
-    padding:6px 10px;
-    cursor:pointer;
+input, select {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
-.bloques{
-    display:flex;
-    flex-wrap:wrap;
-    gap:15px;
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #2e7d32;
+    color: white;
 }
 
-.cetram-box{
-    border:1px solid #ccc;
-    width:300px;
+.bloques {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-.cetram-box h3{
-    margin:0;
-    padding:5px;
-    background:#66bb6a;
-    text-align:center;
+.cetram-box {
+    width: 320px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+.cetram-box h3 {
+    margin: 0;
+    padding: 6px;
+    background: #66bb6a;
+    text-align: center;
 }
 
-th, td{
-    border:1px solid #ccc;
-    text-align:center;
-    font-size:12px;
-    padding:4px;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-th{
-    background:#66bb6a;
+th {
+    background: #66bb6a;
+    color: black;
+    font-size: 12px;
 }
 
-.resumen{
-    width:300px;
-    margin-top:20px;
-    border:1px solid #ccc;
-    padding:10px;
+td {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 5px;
+    font-size: 12px;
+}
+
+.resumen-box {
+    width: 250px;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
 }
 </style>
 </head>
@@ -80,7 +92,22 @@ th{
 
 <select id="cetram">
 <option>ZARAGOZA</option>
+<option>PANTITLÁN</option>
+<option>SANTA MARTA</option>
+<option>INDIOS VERDES</option>
+<option>POTRERO</option>
+<option>LA RAZA</option>
+<option>CHAPULTEPEC</option>
+<option>MIXCOAC</option>
+<option>UNIVERSIDAD</option>
 <option>ZAPATA</option>
+<option>CONSTITUCIÓN DE 1917</option>
+<option>CENTRAL DE ABASTO</option>
+<option>TASQUEÑA</option>
+<option>HUIPULCO</option>
+<option>EL ROSARIO</option>
+<option>TLÁHUAC</option>
+<option>PERIFÉRICO ORIENTE</option>
 </select>
 
 <input id="economico" placeholder="Económico">
@@ -96,10 +123,66 @@ th{
 </select>
 
 <select id="ruta">
-<option>162B</option>
 <option>47A</option>
+<option>162B</option>
 <option>163A</option>
 <option>163B</option>
+<option>164</option>
+<option>166</option>
+<option>168</option>
+<option>1D</option>
+<option>101</option>
+<option>102</option>
+<option>108</option>
+<option>25</option>
+<option>104</option>
+<option>23</option>
+<option>103</option>
+<option>115A</option>
+<option>11A5</option>
+<option>11A7</option>
+<option>116</option>
+<option>119B</option>
+<option>124</option>
+<option>124A</option>
+<option>17E</option>
+<option>123A</option>
+<option>125</option>
+<option>128</option>
+<option>134C</option>
+<option>134D</option>
+<option>162D</option>
+<option>120</option>
+<option>121A</option>
+<option>52C</option>
+<option>159</option>
+<option>161</option>
+<option>161C</option>
+<option>161F</option>
+<option>162</option>
+<option>165A</option>
+<option>57</option>
+<option>46C</option>
+<option>161D</option>
+<option>43</option>
+<option>17F</option>
+<option>81A</option>
+<option>143</option>
+<option>69</option>
+<option>131</option>
+<option>132</option>
+<option>134</option>
+<option>134A</option>
+<option>134B</option>
+<option>19</option>
+<option>19A</option>
+<option>59</option>
+<option>59A</option>
+<option>107</option>
+<option>141</option>
+<option>148</option>
+<option>149</option>
+<option>162E</option>
 </select>
 
 <button onclick="guardar()">Agregar</button>
@@ -109,71 +192,69 @@ th{
 
 <div class="bloques" id="contenedor"></div>
 
-<div class="resumen">
+<div class="resumen-box">
 <h4>Resumen</h4>
 <div id="total"></div>
 </div>
 
 <script>
 
-let datos = {
-    "ZARAGOZA": [],
-    "ZAPATA": []
-};
+let datos = {};
 
 function guardar(){
-    let c = document.getElementById("cetram").value;
-    let e = document.getElementById("economico").value;
-    let m = document.getElementById("modulo").value;
-    let r = document.getElementById("ruta").value;
+let c = document.getElementById("cetram").value;
+let e = document.getElementById("economico").value;
+let m = document.getElementById("modulo").value;
+let r = document.getElementById("ruta").value;
 
-    if(!e) return alert("Ingresa económico");
+if(!e) return alert("Ingresa económico");
 
-    datos[c].push({economico:e, modulo:m, ruta:r});
+if(!datos[c]) datos[c] = [];
 
-    document.getElementById("economico").value="";
-    render();
+datos[c].push({economico:e, modulo:m, ruta:r});
+
+document.getElementById("economico").value="";
+render();
 }
 
 function render(){
-    let cont = document.getElementById("contenedor");
-    cont.innerHTML="";
+let cont = document.getElementById("contenedor");
+cont.innerHTML="";
 
-    Object.keys(datos).forEach(c=>{
-        if(datos[c].length===0) return;
+Object.keys(datos).forEach(c=>{
+let html = `
+<div class="cetram-box">
+<h3>${c}</h3>
+<table>
+<tr>
+<th>Economico</th>
+<th>Modulo</th>
+<th>Ruta</th>
+</tr>`;
 
-        let html = `
-        <div class="cetram-box">
-        <h3>${c}</h3>
-        <table>
-        <tr>
-            <th>Economico</th>
-            <th>Modulo</th>
-            <th>Ruta</th>
-        </tr>`;
+datos[c].forEach(d=>{
+html+=`
+<tr>
+<td>${d.economico}</td>
+<td>${d.modulo}</td>
+<td>${d.ruta}</td>
+</tr>`;
+});
 
-        datos[c].forEach(d=>{
-            html += `
-            <tr>
-                <td>${d.economico}</td>
-                <td>${d.modulo}</td>
-                <td>${d.ruta}</td>
-            </tr>`;
-        });
+html+="</table></div>";
 
-        html += "</table></div>";
-        cont.innerHTML += html;
-    });
+cont.innerHTML+=html;
+});
 }
 
 function generar(){
-    let total = 0;
+let total = 0;
 
-    Object.keys(datos).forEach(c=>{
-        total += datos[c].length;
-    });
+Object.keys(datos).forEach(c=>{
+total += datos[c].length;
+});
 
-    document.getElementById("total").innerText = "TOTAL GENERAL: " + total;
+document.getElementById("total").innerText="TOTAL GENERAL: "+total;
 }
 
 </script>
