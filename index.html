@@ -1,42 +1,127 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CETRAM</title>
+    <title>CETRAM App</title>
     <style>
-        body { font-family: Arial; padding: 20px; }
-        input { margin: 5px; padding: 5px; }
-        button { padding: 6px 10px; margin: 5px; }
-        table { border-collapse: collapse; margin-top: 20px; }
-        td, th { border: 1px solid #ccc; padding: 8px; }
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .form {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .guardar { background: #28a745; color: white; }
+        .resumen { background: #007bff; color: white; }
+        .limpiar { background: #dc3545; color: white; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 15px;
+        }
+
+        th {
+            background: #343a40;
+            color: white;
+        }
+
+        td, th {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .acciones button {
+            margin: 2px;
+        }
+
+        .editar { background: #ffc107; }
+        .eliminar { background: #dc3545; color: white; }
+
+        .resumen-box {
+            margin-top: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
     </style>
 </head>
+
 <body>
 
-<h2>Registro CETRAM</h2>
+<h2>📋 Registro CETRAM</h2>
 
-<input id="cetram" placeholder="CETRAM">
-<input id="modulo" placeholder="Módulo">
-<input id="codigo" placeholder="Código">
+<div class="form">
+    <input id="cetram" placeholder="CETRAM">
+    <input id="modulo" placeholder="Módulo">
+    <input id="codigo" placeholder="Código">
 
-<button onclick="guardar()">Guardar</button>
-<button onclick="generar()">Generar Resumen</button>
-<button onclick="limpiar()">Limpiar Todo</button>
+    <button class="guardar" onclick="guardar()">Guardar</button>
+    <button class="resumen" onclick="generar()">Generar Resumen</button>
+    <button class="limpiar" onclick="limpiar()">Limpiar</button>
+</div>
 
-<table id="tabla">
+<h3>📌 Registros capturados</h3>
+
+<table>
     <thead>
         <tr>
             <th>CETRAM</th>
             <th>MÓDULO</th>
-            <th>CANTIDAD</th>
+            <th>CÓDIGO</th>
+            <th>ACCIONES</th>
         </tr>
     </thead>
-    <tbody></tbody>
+    <tbody id="tablaDatos"></tbody>
 </table>
 
-<h3 id="total"></h3>
+<div class="resumen-box">
+    <h3>📊 Resumen</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>CETRAM</th>
+                <th>MÓDULO</th>
+                <th>CANTIDAD</th>
+            </tr>
+        </thead>
+        <tbody id="tablaResumen"></tbody>
+    </table>
+
+    <h3 id="total"></h3>
+</div>
 
 <script>
 let datos = JSON.parse(localStorage.getItem("datos")) || [];
+let editando = null;
+
+mostrarTabla();
 
 function guardar() {
     const cetram = document.getElementById("cetram").value.toUpperCase();
@@ -44,14 +129,56 @@ function guardar() {
     const codigo = document.getElementById("codigo").value;
 
     if (!cetram || !modulo || !codigo) {
-        alert("Llena todos los campos");
+        alert("Completa todos los campos");
         return;
     }
 
-    datos.push({ cetram, modulo, codigo });
+    if (editando !== null) {
+        datos[editando] = { cetram, modulo, codigo };
+        editando = null;
+    } else {
+        datos.push({ cetram, modulo, codigo });
+    }
+
     localStorage.setItem("datos", JSON.stringify(datos));
 
-    alert("Guardado");
+    limpiarInputs();
+    mostrarTabla();
+}
+
+function mostrarTabla() {
+    const tbody = document.getElementById("tablaDatos");
+    tbody.innerHTML = "";
+
+    datos.forEach((d, i) => {
+        tbody.innerHTML += `
+        <tr>
+            <td>${d.cetram}</td>
+            <td>${d.modulo}</td>
+            <td>${d.codigo}</td>
+            <td class="acciones">
+                <button class="editar" onclick="editar(${i})">Editar</button>
+                <button class="eliminar" onclick="eliminar(${i})">Eliminar</button>
+            </td>
+        </tr>`;
+    });
+}
+
+function editar(i) {
+    const d = datos[i];
+    document.getElementById("cetram").value = d.cetram;
+    document.getElementById("modulo").value = d.modulo;
+    document.getElementById("codigo").value = d.codigo;
+
+    editando = i;
+}
+
+function eliminar(i) {
+    if (confirm("¿Eliminar registro?")) {
+        datos.splice(i, 1);
+        localStorage.setItem("datos", JSON.stringify(datos));
+        mostrarTabla();
+    }
 }
 
 function generar() {
@@ -71,19 +198,19 @@ function generar() {
         resumen[key].cantidad++;
     });
 
-    let tbody = document.querySelector("#tabla tbody");
+    const tbody = document.getElementById("tablaResumen");
     tbody.innerHTML = "";
 
     let total = 0;
 
     Object.values(resumen).forEach(r => {
-        let row = `<tr>
+        tbody.innerHTML += `
+        <tr>
             <td>${r.cetram}</td>
             <td>${r.modulo}</td>
             <td>${r.cantidad}</td>
         </tr>`;
 
-        tbody.innerHTML += row;
         total += r.cantidad;
     });
 
@@ -91,8 +218,16 @@ function generar() {
 }
 
 function limpiar() {
-    localStorage.clear();
-    location.reload();
+    if (confirm("Borrar todo?")) {
+        localStorage.clear();
+        location.reload();
+    }
+}
+
+function limpiarInputs() {
+    document.getElementById("cetram").value = "";
+    document.getElementById("modulo").value = "";
+    document.getElementById("codigo").value = "";
 }
 </script>
 
