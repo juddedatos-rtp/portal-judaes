@@ -3,7 +3,7 @@
 <head>
     <title>Sistema CETRAM RTP</title>
 
-    <!-- Librerías para exportar -->
+    <!-- Librerías -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -83,208 +83,206 @@
 <h2>🟢 Sistema CETRAM RTP</h2>
 
 <div class="form">
-    <select id="cetram">
-        <option>ZARAGOZA</option>
-        <option>PANTITLÁN</option>
-        <option>SANTA MARTA</option>
-        <option>INDIOS VERDES</option>
-        <option>POTRERO</option>
-        <option>LA RAZA</option>
-        <option>CHAPULTEPEC</option>
-        <option>MIXCOAC</option>
-        <option>UNIVERSIDAD</option>
-        <option>ZAPATA</option>
-        <option>CONSTITUCIÓN DE 1917</option>
-        <option>CENTRAL DE ABASTO</option>
-        <option>TASQUEÑA</option>
-        <option>HUIPULCO</option>
-        <option>EL ROSARIO</option>
-        <option>TLÁHUAC</option>
-        <option>PERIFÉRICO ORIENTE</option>
-    </select>
 
-    <input id="economico" placeholder="Económico">
-    <input id="modulo" placeholder="Módulo">
-    <input id="ruta" placeholder="Ruta (ej: 4-1432)">
+<select id="cetram">
+<option>ZARAGOZA</option>
+<option>PANTITLÁN</option>
+<option>SANTA MARTA</option>
+<option>INDIOS VERDES</option>
+<option>POTRERO</option>
+<option>LA RAZA</option>
+<option>CHAPULTEPEC</option>
+<option>MIXCOAC</option>
+<option>UNIVERSIDAD</option>
+<option>ZAPATA</option>
+<option>CONSTITUCIÓN DE 1917</option>
+<option>CENTRAL DE ABASTO</option>
+<option>TASQUEÑA</option>
+<option>HUIPULCO</option>
+<option>EL ROSARIO</option>
+<option>TLÁHUAC</option>
+<option>PERIFÉRICO ORIENTE</option>
+</select>
 
-    <button class="guardar" onclick="guardar()">Agregar</button>
-    <button class="resumen" onclick="generar()">Generar Resumen</button>
-    <button class="excel" onclick="exportarExcel()">Exportar Excel</button>
-    <button class="pdf" onclick="exportarPDF()">Exportar PDF</button>
+<input id="economico" placeholder="Económico">
+
+<select id="modulo">
+<option value="">Módulo</option>
+<option>Módulo 1</option>
+<option>Módulo 2</option>
+<option>Módulo 3</option>
+<option>Módulo 4</option>
+<option>Módulo 5</option>
+<option>Módulo 6</option>
+<option>Módulo 7</option>
+</select>
+
+<select id="ruta">
+<option value="">Ruta</option>
+<option>47A</option><option>162B</option><option>163A</option><option>163B</option>
+<option>164</option><option>166</option><option>168</option><option>1D</option>
+<option>101</option><option>102</option><option>108</option><option>25</option>
+<option>104</option><option>23</option><option>103</option><option>115A</option>
+<option>11A5</option><option>11A7</option><option>116</option><option>119B</option>
+<option>124</option><option>124A</option><option>17E</option><option>123A</option>
+<option>125</option><option>128</option><option>134C</option><option>134D</option>
+<option>162D</option><option>120</option><option>121A</option><option>52C</option>
+<option>159</option><option>161</option><option>161C</option><option>161F</option>
+<option>162</option><option>165A</option><option>57</option><option>46C</option>
+<option>161D</option><option>43</option><option>17F</option><option>81A</option>
+<option>143</option><option>69</option><option>131</option><option>132</option>
+<option>134</option><option>134A</option><option>134B</option>
+<option>19</option><option>19A</option><option>59</option><option>59A</option>
+<option>107</option><option>141</option><option>148</option><option>149</option>
+<option>162E</option>
+</select>
+
+<button class="guardar" onclick="guardar()">Agregar</button>
+<button class="resumen" onclick="generar()">Generar Resumen</button>
+<button class="excel" onclick="exportarExcel()">Excel</button>
+<button class="pdf" onclick="exportarPDF()">PDF</button>
+
 </div>
 
 <div class="contenedor">
 <table>
-    <thead>
-        <tr id="headers"></tr>
-    </thead>
-    <tbody id="tabla"></tbody>
+<thead><tr id="headers"></tr></thead>
+<tbody id="tabla"></tbody>
 </table>
 </div>
 
-<div class="resumen-box">
-    <h3>📊 Resumen</h3>
-    <table id="tablaResumen">
-        <thead>
-            <tr>
-                <th>CETRAM</th>
-                <th>MÓDULO</th>
-                <th>CANTIDAD</th>
-            </tr>
-        </thead>
-        <tbody id="resumen"></tbody>
-    </table>
+<h3>Vista por CETRAM</h3>
+<div id="vistaCetram"></div>
 
-    <h3 id="total"></h3>
+<div class="resumen-box">
+<h3>Resumen</h3>
+<table>
+<thead>
+<tr><th>CETRAM</th><th>MÓDULO</th><th>CANTIDAD</th></tr>
+</thead>
+<tbody id="resumen"></tbody>
+</table>
+<h3 id="total"></h3>
 </div>
 
 <script>
-const columnas = [
-"ZARAGOZA","PANTITLÁN","SANTA MARTA","INDIOS VERDES","POTRERO","LA RAZA",
+const columnas = ["ZARAGOZA","PANTITLÁN","SANTA MARTA","INDIOS VERDES","POTRERO","LA RAZA",
 "CHAPULTEPEC","MIXCOAC","UNIVERSIDAD","ZAPATA","CONSTITUCIÓN DE 1917",
-"CENTRAL DE ABASTO","TASQUEÑA","HUIPULCO","EL ROSARIO","TLÁHUAC","PERIFÉRICO ORIENTE"
-];
+"CENTRAL DE ABASTO","TASQUEÑA","HUIPULCO","EL ROSARIO","TLÁHUAC","PERIFÉRICO ORIENTE"];
 
 let datos = JSON.parse(localStorage.getItem("datos")) || {};
+columnas.forEach(c => { if (!datos[c]) datos[c] = []; });
 
-// Inicializar estructura
-columnas.forEach(c => {
-    if (!datos[c]) datos[c] = [];
-});
-
-// Encabezados
 const headerRow = document.getElementById("headers");
-columnas.forEach(c => {
-    headerRow.innerHTML += `<th>${c}</th>`;
+columnas.forEach(c => headerRow.innerHTML += `<th>${c}</th>`);
+
+function guardar(){
+let cetram = document.getElementById("cetram").value;
+let economico = document.getElementById("economico").value;
+let modulo = document.getElementById("modulo").value;
+let ruta = document.getElementById("ruta").value;
+
+if(!economico || !modulo || !ruta) return alert("Completa campos");
+
+datos[cetram].push({economico, modulo, ruta});
+localStorage.setItem("datos", JSON.stringify(datos));
+
+document.getElementById("economico").value="";
+renderTabla();
+renderVistaCetram();
+}
+
+function renderTabla(){
+let tbody = document.getElementById("tabla");
+tbody.innerHTML="";
+let max = Math.max(...columnas.map(c=>datos[c].length));
+
+for(let i=0;i<max;i++){
+let fila="<tr>";
+columnas.forEach(c=>{
+if(datos[c][i]){
+let d=datos[c][i];
+fila+=`<td>${d.economico}<br>${d.modulo}<br>${d.ruta}</td>`;
+}else fila+="<td></td>";
+});
+fila+="</tr>";
+tbody.innerHTML+=fila;
+}
+}
+
+function renderVistaCetram(){
+let div=document.getElementById("vistaCetram");
+div.innerHTML="";
+
+columnas.forEach(c=>{
+if(datos[c].length===0) return;
+
+let html=`<h4>${c}</h4>
+<table>
+<tr><th>Economico</th><th>Modulo</th><th>Ruta</th></tr>`;
+
+datos[c].forEach(d=>{
+html+=`<tr><td>${d.economico}</td><td>${d.modulo}</td><td>${d.ruta}</td></tr>`;
 });
 
-function guardar() {
-    const cetram = document.getElementById("cetram").value;
-    const economico = document.getElementById("economico").value;
-    const modulo = document.getElementById("modulo").value;
-    const ruta = document.getElementById("ruta").value;
-
-    if (!economico || !modulo || !ruta) {
-        return alert("Completa todos los campos");
-    }
-
-    datos[cetram].push({ economico, modulo, ruta });
-
-    localStorage.setItem("datos", JSON.stringify(datos));
-
-    document.getElementById("economico").value = "";
-    document.getElementById("modulo").value = "";
-    document.getElementById("ruta").value = "";
-
-    renderTabla();
+html+="</table><br>";
+div.innerHTML+=html;
+});
 }
 
-function renderTabla() {
-    const tbody = document.getElementById("tabla");
-    tbody.innerHTML = "";
+function generar(){
+let resumen={}, total=0;
 
-    let maxFilas = Math.max(...columnas.map(c => datos[c].length));
+columnas.forEach(c=>{
+datos[c].forEach(d=>{
+let key=c+"-"+d.modulo;
+if(!resumen[key]) resumen[key]={cetram:c,modulo:d.modulo,cantidad:0};
+resumen[key].cantidad++; total++;
+});
+});
 
-    for (let i = 0; i < maxFilas; i++) {
-        let fila = "<tr>";
+let tbody=document.getElementById("resumen");
+tbody.innerHTML="";
+Object.values(resumen).forEach(r=>{
+tbody.innerHTML+=`<tr><td>${r.cetram}</td><td>${r.modulo}</td><td>${r.cantidad}</td></tr>`;
+});
 
-        columnas.forEach(c => {
-            if (datos[c][i]) {
-                const d = datos[c][i];
-                fila += `<td>
-                    ${d.economico}<br>
-                    M${d.modulo}<br>
-                    ${d.ruta}
-                </td>`;
-            } else {
-                fila += `<td></td>`;
-            }
-        });
-
-        fila += "</tr>";
-        tbody.innerHTML += fila;
-    }
+document.getElementById("total").innerText="TOTAL GENERAL: "+total;
 }
 
-function generar() {
-    let resumen = {};
-    let total = 0;
-
-    columnas.forEach(c => {
-        datos[c].forEach(d => {
-            let key = c + "-" + d.modulo;
-
-            if (!resumen[key]) {
-                resumen[key] = {
-                    cetram: c,
-                    modulo: d.modulo,
-                    cantidad: 0
-                };
-            }
-
-            resumen[key].cantidad++;
-            total++;
-        });
-    });
-
-    const tbody = document.getElementById("resumen");
-    tbody.innerHTML = "";
-
-    Object.values(resumen).forEach(r => {
-        tbody.innerHTML += `
-        <tr>
-            <td>${r.cetram}</td>
-            <td>${r.modulo}</td>
-            <td>${r.cantidad}</td>
-        </tr>`;
-    });
-
-    document.getElementById("total").innerText = "TOTAL GENERAL: " + total;
+function exportarExcel(){
+let data=[["CETRAM","MODULO","ECONOMICO","RUTA"]];
+columnas.forEach(c=>{
+datos[c].forEach(d=>{
+data.push([c,d.modulo,d.economico,d.ruta]);
+});
+});
+let ws=XLSX.utils.aoa_to_sheet(data);
+let wb=XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb,ws,"CETRAM");
+XLSX.writeFile(wb,"CETRAM_RTP.xlsx");
 }
 
-// EXPORTAR A EXCEL
-function exportarExcel() {
-    let data = [["CETRAM","MODULO","ECONOMICO","RUTA"]];
+function exportarPDF(){
+const { jsPDF } = window.jspdf;
+const doc=new jsPDF();
+let y=10;
+doc.text("Reporte CETRAM RTP",10,y);
+y+=10;
 
-    columnas.forEach(c => {
-        datos[c].forEach(d => {
-            data.push([c, d.modulo, d.economico, d.ruta]);
-        });
-    });
+columnas.forEach(c=>{
+datos[c].forEach(d=>{
+doc.text(`${c} | ${d.modulo} | ${d.economico} | ${d.ruta}`,10,y);
+y+=7;
+if(y>280){doc.addPage(); y=10;}
+});
+});
 
-    let ws = XLSX.utils.aoa_to_sheet(data);
-    let wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "CETRAM");
-
-    XLSX.writeFile(wb, "CETRAM_RTP.xlsx");
-}
-
-// EXPORTAR A PDF
-function exportarPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    let y = 10;
-    doc.text("Reporte CETRAM RTP", 10, y);
-
-    y += 10;
-
-    columnas.forEach(c => {
-        datos[c].forEach(d => {
-            doc.text(`${c} | M${d.modulo} | ${d.economico} | ${d.ruta}`, 10, y);
-            y += 7;
-
-            if (y > 280) {
-                doc.addPage();
-                y = 10;
-            }
-        });
-    });
-
-    doc.save("CETRAM_RTP.pdf");
+doc.save("CETRAM_RTP.pdf");
 }
 
 renderTabla();
+renderVistaCetram();
 </script>
 
 </body>
