@@ -14,15 +14,11 @@ body {
     padding: 20px;
 }
 
-/* TITULO */
 h2 {
     color: #2e7d32;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
-/* FORMULARIO (MENÚ VERDE CLARO) */
+/* MENÚ VERDE CLARO */
 .form {
     background: #e8f5e9;
     padding: 15px;
@@ -32,14 +28,12 @@ h2 {
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-/* INPUTS */
 input, select {
     padding: 8px;
     margin: 5px;
     border-radius: 6px;
     border: 1px solid #ccc;
     background: #ffffff;
-    min-width: 150px;
 }
 
 /* BOTONES */
@@ -48,11 +42,6 @@ button {
     border-radius: 6px;
     cursor: pointer;
     border: none;
-    transition: 0.2s;
-}
-
-button:hover {
-    transform: scale(1.05);
 }
 
 .agregar { background: #2e7d32; color: white; }
@@ -67,7 +56,6 @@ button:hover {
     gap: 15px;
 }
 
-/* TARJETAS CETRAM */
 .cetram-box {
     width: 320px;
     border: 1px solid #ddd;
@@ -76,16 +64,13 @@ button:hover {
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-/* ENCABEZADO CETRAM */
 .cetram-box h3 {
     margin: 0;
     padding: 8px;
     background: #a5d6a7;
     text-align: center;
-    border-radius: 10px 10px 0 0;
 }
 
-/* TABLAS */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -93,7 +78,6 @@ table {
 
 th {
     background: #c8e6c9;
-    color: black;
     font-size: 12px;
 }
 
@@ -104,19 +88,12 @@ td {
     font-size: 12px;
 }
 
-/* RESUMEN */
 .resumen-box {
     width: 350px;
     margin-top: 20px;
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 10px;
-    background: #ffffff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-
-.resumen-box h4 {
-    margin-top: 0;
 }
 </style>
 </head>
@@ -128,7 +105,7 @@ td {
 <div class="form">
 
 <select id="cetram">
-<option value="">Seleccionar el Cetram</option>
+<option value="">Seleccionar CETRAM</option>
 <option>ZARAGOZA</option>
 <option>PANTITLÁN</option>
 <option>SANTA MARTA</option>
@@ -151,7 +128,7 @@ td {
 <input id="economico" placeholder="Económico">
 
 <select id="modulo">
-<option value="">Seleccionar el Módulo</option>
+<option value="">Módulo</option>
 <option>Módulo 1</option>
 <option>Módulo 2</option>
 <option>Módulo 3</option>
@@ -162,7 +139,7 @@ td {
 </select>
 
 <select id="ruta">
-<option value="">Seleccionar la Ruta</option>
+<option value="">Ruta</option>
 <option>47A</option><option>162B</option><option>163A</option><option>163B</option>
 <option>164</option><option>166</option><option>168</option><option>1D</option>
 <option>101</option><option>102</option><option>108</option><option>25</option>
@@ -192,7 +169,6 @@ td {
 
 <div class="resumen-box">
 <h4>Resumen</h4>
-
 <table>
 <thead>
 <tr>
@@ -205,7 +181,6 @@ td {
 </table>
 
 <h4 id="totalGeneral"></h4>
-
 </div>
 
 <script>
@@ -218,7 +193,7 @@ let e = document.getElementById("economico").value;
 let m = document.getElementById("modulo").value;
 let r = document.getElementById("ruta").value;
 
-if(!e) return alert("Ingresa económico");
+if(!c || !e || !m || !r) return alert("Completa todos los campos");
 
 if(!datos[c]) datos[c] = [];
 
@@ -276,38 +251,104 @@ tbody.innerHTML+=`<tr>
 document.getElementById("totalGeneral").innerText="TOTAL GENERAL: "+total;
 }
 
+/* 🟢 EXCEL MATRIZ */
 function exportarExcel(){
-let data=[["CETRAM","MODULO","CANTIDAD"]];
 
-document.querySelectorAll("#tablaResumen tr").forEach(tr=>{
-let row=[];
-tr.querySelectorAll("td").forEach(td=>row.push(td.innerText));
-if(row.length) data.push(row);
+let wb = XLSX.utils.book_new();
+let ws_data = [];
+
+let header1 = [];
+let header2 = [];
+
+Object.keys(datos).forEach(c=>{
+    header1.push(c,"","");
+    header2.push("Económico","Módulo","Ruta");
 });
 
-let ws=XLSX.utils.aoa_to_sheet(data);
-let wb=XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(wb,ws,"Resumen");
-XLSX.writeFile(wb,"Resumen_CETRAM.xlsx");
+ws_data.push(header1);
+ws_data.push(header2);
+
+let max = 0;
+Object.keys(datos).forEach(c=>{
+    if(datos[c].length > max) max = datos[c].length;
+});
+
+for(let i=0;i<max;i++){
+    let fila = [];
+    Object.keys(datos).forEach(c=>{
+        if(datos[c][i]){
+            fila.push(datos[c][i].economico);
+            fila.push(datos[c][i].modulo);
+            fila.push(datos[c][i].ruta);
+        }else{
+            fila.push("","","");
+        }
+    });
+    ws_data.push(fila);
 }
 
+let ws = XLSX.utils.aoa_to_sheet(ws_data);
+XLSX.utils.book_append_sheet(wb, ws, "REPORTE");
+
+XLSX.writeFile(wb, "Reporte_CETRAM_RTP.xlsx");
+}
+
+/* 🔴 PDF MATRIZ */
 function exportarPDF(){
+
 const { jsPDF } = window.jspdf;
-const doc=new jsPDF();
+const doc = new jsPDF('l','mm','a4');
 
-let y=10;
-doc.text("Resumen CETRAM",10,y);
-y+=10;
+let y = 10;
 
-document.querySelectorAll("#tablaResumen tr").forEach(tr=>{
-let row=[...tr.children].map(td=>td.innerText).join(" | ");
-doc.text(row,10,y);
-y+=7;
+doc.setFontSize(10);
+doc.text("REPORTE CETRAM RTP", 10, y);
+y += 8;
+
+let x = 10;
+Object.keys(datos).forEach(c=>{
+    doc.text(c, x, y);
+    x += 45;
 });
 
-doc.text(document.getElementById("totalGeneral").innerText,10,y+10);
+y += 6;
+x = 10;
 
-doc.save("Resumen_CETRAM.pdf");
+Object.keys(datos).forEach(c=>{
+    doc.text("Eco", x, y);
+    doc.text("Mod", x+12, y);
+    doc.text("Ruta", x+25, y);
+    x += 45;
+});
+
+y += 6;
+
+let max = 0;
+Object.keys(datos).forEach(c=>{
+    if(datos[c].length > max) max = datos[c].length;
+});
+
+for(let i=0;i<max;i++){
+    let x = 10;
+    Object.keys(datos).forEach(c=>{
+        if(datos[c][i]){
+            let d = datos[c][i];
+            doc.text(String(d.economico), x, y);
+            doc.text(String(d.modulo), x+12, y);
+            doc.text(String(d.ruta), x+25, y);
+        }
+        x += 45;
+    });
+
+    y += 6;
+
+    if(y > 190){
+        doc.addPage();
+        y = 10;
+    }
+}
+
+doc.save("Reporte_CETRAM_RTP.pdf");
 }
 
 </script>
