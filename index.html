@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>CETRAM</title>
+<title>Sistema CETRAM RTP</title>
 
 <!-- Librería Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -13,9 +13,7 @@ body {
     padding: 20px;
 }
 
-h2 {
-    color: #2e7d32;
-}
+h2 { color: #2e7d32; }
 
 .form {
     background: #e8f5e9;
@@ -43,6 +41,19 @@ button {
 .agregar { background: red; color: white; }
 .total { background: blue; color: white; }
 .excel { background: green; color: white; }
+
+.agregar:hover { background: darkred; }
+.total:hover { background: darkblue; }
+.excel:hover { background: darkgreen; }
+
+/* BOTÓN ELIMINAR */
+.eliminar {
+    background: red;
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 5px;
+}
 
 /* BLOQUES */
 .bloques {
@@ -94,7 +105,7 @@ td {
 
 <body>
 
-<h2> Economicos a Ingresar a CETRAM</h2>
+<h2>🟢 Sistema CETRAM RTP</h2>
 
 <div class="form">
 
@@ -207,15 +218,33 @@ cont.innerHTML="";
 
 Object.keys(datos).forEach(c=>{
 let html=`<div class="cetram-box"><h3>${c}</h3><table>
-<tr><th>Economico</th><th>Modulo</th><th>Ruta</th></tr>`;
+<tr><th>Economico</th><th>Modulo</th><th>Ruta</th><th></th></tr>`;
 
-datos[c].forEach(d=>{
-html+=`<tr><td>${d.economico}</td><td>${d.modulo}</td><td>${d.ruta}</td></tr>`;
+datos[c].forEach((d,i)=>{
+html+=`<tr>
+<td>${d.economico}</td>
+<td>${d.modulo}</td>
+<td>${d.ruta}</td>
+<td><button class="eliminar" onclick="eliminar('${c}',${i})">🗑️</button></td>
+</tr>`;
 });
 
 html+="</table></div>";
 cont.innerHTML+=html;
 });
+}
+
+function eliminar(cetram, index){
+if(confirm("¿Eliminar registro?")){
+datos[cetram].splice(index,1);
+
+if(datos[cetram].length === 0){
+delete datos[cetram];
+}
+
+render();
+generar();
+}
 }
 
 function generar(){
@@ -259,8 +288,8 @@ let header1 = [];
 let header2 = [];
 
 Object.keys(datos).forEach(c=>{
-    header1.push(c,"","");
-    header2.push("Económico","Módulo","Ruta");
+header1.push(c,"","");
+header2.push("Económico","Módulo","Ruta");
 });
 
 ws_data.push(header1);
@@ -268,21 +297,21 @@ ws_data.push(header2);
 
 let max = 0;
 Object.keys(datos).forEach(c=>{
-    if(datos[c].length > max) max = datos[c].length;
+if(datos[c].length > max) max = datos[c].length;
 });
 
 for(let i=0;i<max;i++){
-    let fila = [];
-    Object.keys(datos).forEach(c=>{
-        if(datos[c][i]){
-            fila.push(datos[c][i].economico);
-            fila.push(datos[c][i].modulo);
-            fila.push(datos[c][i].ruta);
-        }else{
-            fila.push("","","");
-        }
-    });
-    ws_data.push(fila);
+let fila = [];
+Object.keys(datos).forEach(c=>{
+if(datos[c][i]){
+fila.push(datos[c][i].economico);
+fila.push(datos[c][i].modulo);
+fila.push(datos[c][i].ruta);
+}else{
+fila.push("","","");
+}
+});
+ws_data.push(fila);
 }
 
 let ws = XLSX.utils.aoa_to_sheet(ws_data);
